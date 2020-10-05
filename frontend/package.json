@@ -1,0 +1,6 @@
+{
+  "name": "frontend",
+  "devDependencies": {
+    "tailwindcss": "^1.8.10"
+  }
+}
