@@ -28,8 +28,6 @@ dependencies {
     implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
-    implementation(project(":shared"))
-
     implementation("ch.qos.logback:logback-classic:1.2.3")
 }
 tasks.withType<KotlinCompile>() {

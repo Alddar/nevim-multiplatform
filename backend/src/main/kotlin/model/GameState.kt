@@ -22,7 +22,7 @@ data class Deck (
 data class GamePlayer(
     val name: String,
     @Required
-    val hand: Array<Card?> = arrayOf(),
+    val hand: List<Card?> = listOf(),
     @Required
     val holding: Card? = null
 ) {
