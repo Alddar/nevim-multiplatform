@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '@fortawesome/fontawesome-free';
+
+@import url('https://fonts.googleapis.com/css?family=Trebuchet MS:400,700&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.button {
+  @apply bg-gray-400 font-bold py-2 px-3 rounded cursor-pointer
+}
+
+.button:hover {
+  @apply bg-gray-600 text-white
+}
+
+.button-red {
+  @apply bg-red-700 text-white
+}
+
+.button-red:hover {
+  @apply bg-red-500
+}
+
+.floating {
+  @apply m-8 fixed w-16 h-16 rounded-full bg-red-700 text-white bottom-0 right-0
+}
+
+.floating:hover {
+  @apply bg-red-500 text-white
+}
+
+.text-input {
+  @apply mt-1 block w-full py-2 px-3 rounded-md transition duration-150 ease-in-out
+}
+
+.text-input:focus {
+  @apply outline-none border-blue-300
+}

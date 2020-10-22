@@ -1,0 +1,26 @@
+<div class="w-full h-full bg-gray-900">
+  <app-modal #userModal title="Uživatel">
+    <p>Jméno: {{ (localPlayer$ | async)?.name }}</p>
+    <p>Id: {{ (localPlayer$ | async)?.id }}</p>
+  </app-modal>
+
+  <app-modal #createLobbyModal title="Vytvořit místnost">
+    <app-lobby-create></app-lobby-create>
+  </app-modal>
+
+  <div>
+    <div class="w-full flex bg-gray-800 border-b border-gray-700">
+      <h1 class="text-2xl font-bold text-gray-300 m-auto">Seznam místností</h1>
+      <button (click)="userModal.open()" class="text-red-700 hover:text-red-500 p-3">
+        <fa-icon [icon]="faUserCircle" size="3x" class="stroke-current"></fa-icon>
+      </button>
+    </div>
+    <button class="floating floating-red" (click)="createLobbyModal.open()">
+      <fa-icon [icon]="faPlus" size="2x" class="stroke-current"></fa-icon>
+    </button>
+    <a href="javascript:void(0);" *ngFor="let number of [1,2,3,4]" (click)="lobbyJoin(number)" class="w-100 rounded bg-gray-850 mx-2 my-4 p-4 text-gray-300 flex">
+      <div class="flex-grow">Místnost {{number}}</div>
+      <div>(0/4)</div>
+    </a>
+  </div>
+</div>

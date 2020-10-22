@@ -11,12 +11,9 @@ val startedReducer: Reducer<Boolean> =  { state, action ->
     }
 }
 
-//fun gameStateReducer(state: GameState, action: Any) =
-
 val gameStateReducer: Reducer<GameState> = { state, action ->
     GameState(
-        started = startedReducer(state.started, action),
-        players = playerReducer(state.players, action)
+        started = startedReducer(state.started, action)
     )
 }
 

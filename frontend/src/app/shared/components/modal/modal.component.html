@@ -1,0 +1,11 @@
+<div [className]="(isOpen ? 'block' : 'hidden') + ' z-50 fixed w-full h-full overflow-auto inset-0 bg-gray-850'">
+  <div class="flex w-full h-20 items-center border-b border-gray-700">
+    <h1 class="text-2xl font-bold text-gray-300 m-auto">{{title}}</h1>
+    <button  (click)="close()" class="m-5 text-red-700 hover:text-red-500">
+      <fa-icon [icon]="faTimes"size="2x"></fa-icon>
+    </button>
+  </div>
+  <div class="text-gray-300 p-5">
+    <ng-content></ng-content>
+  </div>
+</div>

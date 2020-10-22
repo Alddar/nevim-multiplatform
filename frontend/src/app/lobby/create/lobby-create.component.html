@@ -1,0 +1,13 @@
+<div class="w-full h-full">
+  <form [formGroup]="lobbyForm" (ngSubmit)="onSubmit()">
+    <label class="text-gray-300">
+      Název místnosti
+      <input type="text" formControlName="name" class="text-input bg-gray-800 text-gray-300 my-2"/>
+    </label>
+    <label class="text-gray-300">
+      Počet hráčů
+      <input type="text" formControlName="maxPlayers" class="text-input bg-gray-800 text-gray-300 my-2"/>
+    </label>
+    <input type="submit" [disabled]="!lobbyForm.valid" value="Vytvořit" class="button button-red w-full my-4" />
+  </form>
+</div>
