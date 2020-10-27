@@ -1,5 +1,5 @@
 import { OutgoingMessage } from './common'
-import {CreateLobbyDTO, NameDTO} from '../../types/multiplatform-shared'
+import {CreateLobbyDTO, IdDTO, NameDTO} from '../../dto/server'
 
 export const OUT_NAME = 'NAME_MESSAGE'
 
@@ -14,5 +14,14 @@ export const OUT_CREATE_LOBBY = 'CREATE_LOBBY'
 export class CreateLobbyMessage extends OutgoingMessage {
   constructor(public payload: CreateLobbyDTO) {
     super(OUT_CREATE_LOBBY, payload)
+  }
+}
+
+
+export const OUT_JOIN_LOBBY = 'JOIN_LOBBY'
+
+export class JoinLobbyMessage extends OutgoingMessage {
+  constructor(public payload: IdDTO) {
+    super(OUT_JOIN_LOBBY, payload)
   }
 }

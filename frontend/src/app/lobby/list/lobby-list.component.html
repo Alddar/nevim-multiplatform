@@ -1,7 +1,7 @@
 <div class="w-full h-full bg-gray-900">
   <app-modal #userModal title="Uživatel">
-    <p>Jméno: {{ (localPlayer$ | async)?.name }}</p>
-    <p>Id: {{ (localPlayer$ | async)?.id }}</p>
+    <p>Jméno: {{ (player$ | async)?.name }}</p>
+    <p>Id: {{ (player$ | async)?.id }}</p>
   </app-modal>
 
   <app-modal #createLobbyModal title="Vytvořit místnost">
@@ -18,9 +18,9 @@
     <button class="floating floating-red" (click)="createLobbyModal.open()">
       <fa-icon [icon]="faPlus" size="2x" class="stroke-current"></fa-icon>
     </button>
-    <a href="javascript:void(0);" *ngFor="let number of [1,2,3,4]" (click)="lobbyJoin(number)" class="w-100 rounded bg-gray-850 mx-2 my-4 p-4 text-gray-300 flex">
-      <div class="flex-grow">Místnost {{number}}</div>
-      <div>(0/4)</div>
+    <a href="javascript:void(0);" *ngFor="let lobby of (lobbyList$ | async)?.lobbies" (click)="lobbyJoin(lobby.id)" class="w-100 rounded bg-gray-850 mx-2 my-4 p-4 text-gray-300 flex">
+      <div class="flex-grow">{{ lobby.name }}</div>
+      <div>({{lobby.players}}/{{lobby.maxPlayers}})</div>
     </a>
   </div>
 </div>

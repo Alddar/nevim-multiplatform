@@ -8,6 +8,7 @@ import kotlinx.serialization.Transient
 data class Player(
     val id: String,
     val name: String? = null,
+    val ready: Boolean = false,
     @Transient
     val session: WebSocketServerSession? = null
 )
@@ -15,6 +16,8 @@ data class Player(
 @Serializable
 data class Lobby(
     val id: String,
+    val name: String,
+    val maxPlayers: Int,
     val players: List<Player>
 )
 

@@ -4,10 +4,6 @@ import {Observable} from 'rxjs'
 import {environment} from '../../environments/environment'
 import {webSocket} from 'rxjs/webSocket'
 import {Action} from '@ngrx/store'
-import {map, shareReplay, switchMap} from 'rxjs/operators'
-import {setId} from '../actions/incoming.actions'
-import {IncomingMessage} from '../messages/incoming/common'
-import {IN_ID} from '../messages/incoming/lobby'
 
 export const WS_ENDPOINT = environment.wsEndpoint
 
@@ -17,23 +13,18 @@ export const WS_ENDPOINT = environment.wsEndpoint
 export class WebsocketService {
   socket$: WebSocketSubject<any>
 
-  getActions(): Observable<Action> {
+  getSocket(): Observable<Action> {
     if (!this.socket$) {
       this.socket$ = webSocket(WS_ENDPOINT)
     }
 
-    return this.socket$.pipe(
-      map((message: IncomingMessage) => {
-        switch (message.type) {
-          case IN_ID:
-            return setId({idDTO: message.payload})
-        }
-      }),
-    )
+    this.socket$.subscribe((message) => console.log('INCOMING', message))
+
+    return this.socket$
   }
 
   send(message): void {
-    console.log(message)
+    console.log('OUTGOING', message)
     this.socket$.next(message)
   }
 }

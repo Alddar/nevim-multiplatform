@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core'
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms'
-import {selectLocalPlayerName} from '../../selectors/local-player.selector'
-import {take} from 'rxjs/operators'
-import {createLobby, sendName} from '../../actions/outgoing.actions'
+import {FormBuilder, Validators} from '@angular/forms'
+import {createLobby} from '../../actions/lobby.actions'
 import {Store} from '@ngrx/store'
 import {AppState} from '../../reducers/app.reducer'
-import {CreateLobbyDTO} from '../../types/multiplatform-shared'
+import {CreateLobbyDTO} from '../../dto/server'
 
 @Component({
   selector: 'app-lobby-create',

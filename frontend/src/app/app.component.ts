@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core'
-import {WebsocketService} from './services/websocket.service'
 import {Store} from '@ngrx/store'
 import {AppState} from './reducers/app.reducer'
 import {Router} from '@angular/router'
-import {selectLocalPlayerName} from './selectors/local-player.selector'
+import {selectPlayer} from './selectors/player.selector'
 import {take, tap} from 'rxjs/operators'
 
 @Component({
@@ -19,7 +18,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.select(selectLocalPlayerName).pipe(take(1)).subscribe((name) => {
+    this.store.select(selectPlayer).pipe(take(1)).subscribe((name) => {
       if (name == null) {
         this.router.navigate(['/'])
       }

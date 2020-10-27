@@ -6,7 +6,7 @@ import {StoreModule} from '@ngrx/store'
 import {NameComponent} from './name/name.component'
 import {reducers} from './reducers/app.reducer'
 import {StoreDevtoolsModule} from '@ngrx/store-devtools'
-import {LobbyListComponent} from './lobby/lobby-list.component'
+import {LobbyListComponent} from './lobby/list/lobby-list.component'
 import {EffectsModule} from '@ngrx/effects'
 import {OutgoingEffects} from './effects/outgoing.effects'
 import {IncomingEffects} from './effects/incoming.effect'
@@ -15,6 +15,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome'
 import {ModalComponent} from './shared/components/modal/modal.component'
 import {ReactiveFormsModule} from '@angular/forms'
 import {LobbyCreateComponent} from './lobby/create/lobby-create.component'
+import { LobbyComponent } from './lobby/lobby.component'
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import {LobbyCreateComponent} from './lobby/create/lobby-create.component'
     LobbyListComponent,
     ModalComponent,
     LobbyCreateComponent,
+    LobbyComponent,
   ],
   imports: [
     BrowserModule,

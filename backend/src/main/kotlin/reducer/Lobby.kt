@@ -1,5 +1,7 @@
 package reducer
 
+import action.CreateLobby
+import action.JoinLobby
 import action.NewPlayer
 import model.Lobby
 import model.Player
@@ -15,7 +17,11 @@ val playersReducer: Reducer<Map<String, Player>> = { state, action ->
 
 val lobbiesReducer: Reducer<Map<String, Lobby>> =  { state, action ->
     when (action) {
-//        is CreateLobby -> state + action.lobby
+        is CreateLobby -> state + (action.lobby.id to action.lobby)
+        is JoinLobby -> state.mapValues {(id, lobby) ->
+            if(id == action.lobby.id && lobby.maxPlayers > lobby.players.size) lobby.copy(players = lobby.players + action.player)
+            else lobby
+        }
         else -> state
     }
 }

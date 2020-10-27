@@ -1,36 +1,30 @@
 import {Component, OnInit} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {AppState} from '../reducers/app.reducer'
-import {Observable} from 'rxjs'
-import {selectLocalPlayer, selectLocalPlayerName} from '../selectors/local-player.selector'
-import {setName} from '../actions/local-player.actions'
-import {LocalPlayerState} from '../reducers/local-player.reducer'
-import {WebsocketService} from '../services/websocket.service'
-import {first, take} from 'rxjs/operators'
-import {sendName} from '../actions/outgoing.actions'
+import {sendName} from '../actions/lobby.actions'
+import {FormBuilder, Validators} from '@angular/forms'
 
 @Component({
   selector: 'app-name',
   templateUrl: './name.component.html'
 })
 export class NameComponent implements OnInit {
+  playerForm = this.fb.group({
+    name: ['', Validators.compose([
+      Validators.required,
+      Validators.maxLength(20),
+    ])],
+  })
 
-  localPlayer$: Observable<LocalPlayerState>
-
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,
+              private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
-    this.localPlayer$ = this.store.select(selectLocalPlayer)
   }
 
-  nameChanged(e: KeyboardEvent): void {
-    this.store.dispatch(setName({name: (e.target as HTMLInputElement).value}))
-  }
-
-  continue(): void {
-    this.store.select(selectLocalPlayerName).pipe(take(1)).subscribe((name) => {
-      this.store.dispatch(sendName({name}))
-    })
+  onSubmit(): void {
+    const name = this.playerForm.get('name').value
+    this.store.dispatch(sendName({name}))
   }
 }
