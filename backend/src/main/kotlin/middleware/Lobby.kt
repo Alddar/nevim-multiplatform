@@ -1,8 +1,6 @@
 package middleware
 
-import action.CreateLobby
-import action.JoinLobby
-import action.NewPlayer
+import action.*
 import dto.IdDTO
 import dto.LobbyDTO
 import dto.LobbyListDTO
@@ -12,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import messages.outgoing.IDMessage
-import messages.outgoing.LobbyIdMessage
 import messages.outgoing.UpdateLobbyListMessage
 import messages.outgoing.UpdateLobbyMessage
 import model.Lobby
@@ -36,25 +33,10 @@ val sendId = middleware<Server> { _, next, action ->
     result
 }
 
-val sendLobbyId = middleware<Server> { _, next, action ->
-    val result = next(action)
-    if (action is CreateLobby) {
-        GlobalScope.launch {
-            action.lobby.players.first().session?.send(
-                Frame.Text(
-                    Json.encodeToString(
-                        LobbyIdMessage(IdDTO(action.lobby.id))
-                    )
-                )
-            )
-        }
-    }
-    result
-}
-
 val updateLobbyList = middleware<Server> { store, next, action ->
     val result = next(action)
-    if (action is CreateLobby || action is NewPlayer || action is JoinLobby) {
+    when(action) {
+        is CreateLobby, is NewPlayer, is JoinLobby, is UpdateLobby, is DeleteLobby ->
         GlobalScope.launch {
             store.getState().players.forEach { (_, player) ->
                 player.session?.send(
@@ -99,6 +81,23 @@ val updateLobby = middleware<Server> { store, next, action ->
     when(action) {
         is CreateLobby -> updateLobby(store, action.lobby)
         is JoinLobby -> updateLobby(store, action.lobby)
+        is UpdateLobby -> updateLobby(store, action.lobby)
+    }
+    result
+}
+
+val leaveLobby = middleware<Server> { store, next, action ->
+    val result = next(action)
+    when(action) {
+        is LeaveLobby -> {
+            val lobby = store.getState().lobbies[action.player.lobby?.id]
+
+            if(lobby?.players?.isEmpty() == true) {
+                store.dispatch(DeleteLobby(lobby))
+            } else {
+                store.dispatch(UpdateLobby(lobby!!))
+            }
+        }
     }
     result
 }

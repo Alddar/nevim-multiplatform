@@ -6,6 +6,7 @@ import {selectLobby} from '../selectors/lobby.selector'
 import {Store} from '@ngrx/store'
 import {AppState} from '../reducers/app.reducer'
 import {LobbyDTO} from '../dto/server'
+import {leaveLobby} from '../actions/lobby.actions'
 
 @Component({
   selector: 'app-lobby',
@@ -30,7 +31,7 @@ export class LobbyComponent implements OnInit {
   }
 
   leave(): void {
-    console.log('leave')
+    this.store.dispatch(leaveLobby())
   }
 
 }

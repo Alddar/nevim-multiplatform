@@ -25,3 +25,11 @@ export class JoinLobbyMessage extends OutgoingMessage {
     super(OUT_JOIN_LOBBY, payload)
   }
 }
+
+export const OUT_LEAVE_LOBBY = 'LEAVE_LOBBY'
+
+export class LeaveLobbyMessage extends OutgoingMessage {
+  constructor() {
+    super(OUT_LEAVE_LOBBY, {})
+  }
+}

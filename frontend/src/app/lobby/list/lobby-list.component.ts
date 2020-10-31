@@ -10,6 +10,7 @@ import {LobbyListState} from '../../reducers/lobby-list.reducer'
 import {selectLobbyList} from '../../selectors/lobby-list.selector'
 import {joinLobby} from '../../actions/lobby.actions'
 import {IdDTO} from '../../dto/server'
+import {take, tap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-lobby-list',
@@ -32,7 +33,7 @@ export class LobbyListComponent implements OnInit {
   }
 
   lobbyJoin(id: string): void {
-    this.lobbyList$.subscribe((lobbyList) => {
+    this.lobbyList$.pipe(take(1)).subscribe((lobbyList) => {
         lobbyList.lobbies.forEach((lobby) => {
           if (lobby.maxPlayers > lobby.players) {
             this.store.dispatch(joinLobby({idDTO: new IdDTO(id)}))

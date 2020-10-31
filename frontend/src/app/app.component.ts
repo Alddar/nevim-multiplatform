@@ -18,8 +18,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.select(selectPlayer).pipe(take(1)).subscribe((name) => {
-      if (name == null) {
+    this.store.select(selectPlayer).pipe(take(1)).subscribe((player) => {
+      if (player.id == null) {
         this.router.navigate(['/'])
       }
     })

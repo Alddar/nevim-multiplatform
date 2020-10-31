@@ -9,14 +9,6 @@ export class IdMessage extends IncomingMessage {
   }
 }
 
-export const IN_LOBBY_ID = 'ID_LOBBY'
-
-export class LobbyIdMessage extends IncomingMessage {
-  constructor(public payload: IdDTO) {
-    super(IN_LOBBY_ID, payload)
-  }
-}
-
 export const IN_UPDATE_LOBBY_LIST = 'UPDATE_LOBBY_LIST'
 
 export class UpdateLobbyListMessage extends IncomingMessage {

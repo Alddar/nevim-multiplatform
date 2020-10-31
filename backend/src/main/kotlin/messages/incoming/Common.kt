@@ -31,6 +31,7 @@ abstract class IncomingMessage(val type: String) {
                 IN_NAME -> Json.decodeFromString<NameMessage>(message)
                 IN_CREATE_LOBBY -> Json.decodeFromString<CreateLobbyMessage>(message)
                 IN_JOIN_LOBBY -> Json.decodeFromString<JoinLobbyMessage>(message)
+                IN_LEAVE_LOBBY -> Json.decodeFromString<LeaveLobbyMessage>(message)
                 else -> ErrorMessage()
             }
         }

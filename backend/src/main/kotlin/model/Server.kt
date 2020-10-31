@@ -8,9 +8,11 @@ import kotlinx.serialization.Transient
 data class Player(
     val id: String,
     val name: String? = null,
+    @Transient
+    val session: WebSocketServerSession? = null,
     val ready: Boolean = false,
     @Transient
-    val session: WebSocketServerSession? = null
+    val lobby: Lobby? = null,
 )
 
 @Serializable

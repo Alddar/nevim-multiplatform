@@ -3,8 +3,8 @@ import {Actions, createEffect} from '@ngrx/effects'
 import {WebsocketService} from '../services/websocket.service'
 import {map} from 'rxjs/operators'
 import {IncomingMessage} from '../messages/incoming/common'
-import {IN_ID, IN_LOBBY_ID, IN_UPDATE_LOBBY, IN_UPDATE_LOBBY_LIST} from '../messages/incoming/lobby'
-import {lobbyId, setId, updateLobby, updateLobbyList} from '../actions/lobby.actions'
+import {IN_ID, IN_UPDATE_LOBBY, IN_UPDATE_LOBBY_LIST} from '../messages/incoming/lobby'
+import {setId, updateLobby, updateLobbyList} from '../actions/lobby.actions'
 
 @Injectable()
 export class IncomingEffects {
@@ -13,8 +13,6 @@ export class IncomingEffects {
       switch (message.type) {
         case IN_ID:
           return setId({idDTO: message.payload})
-        case IN_LOBBY_ID:
-          return lobbyId({idDTO: message.payload})
         case IN_UPDATE_LOBBY_LIST:
           return updateLobbyList({lobbyListDTO: message.payload})
         case IN_UPDATE_LOBBY:

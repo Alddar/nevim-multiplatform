@@ -10,11 +10,6 @@ const val OUT_ID = "ID_MESSAGE"
 @Serializable
 class IDMessage(override val payload: IdDTO): OutgoingMessage(OUT_ID)
 
-const val OUT_LOBBY_ID = "ID_LOBBY"
-
-@Serializable
-class LobbyIdMessage(override val payload: IdDTO): OutgoingMessage(OUT_LOBBY_ID)
-
 const val OUT_UPDATE_LOBBY_LIST = "UPDATE_LOBBY_LIST"
 
 @Serializable
