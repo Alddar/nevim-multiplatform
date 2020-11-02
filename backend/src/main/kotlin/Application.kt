@@ -60,10 +60,10 @@ fun Application.module() {
     }
 
     routing {
-        get("/") {
+        get("/ws") {
             call.respond("It WORKS!")
         }
-        webSocket("/") {
+        webSocket("/ws") {
             val currentSession = call.sessions.get<PlayerSession>()
 
             if (currentSession == null) {

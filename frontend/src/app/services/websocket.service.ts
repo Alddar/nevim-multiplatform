@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment'
 import {webSocket} from 'rxjs/webSocket'
 import {Action} from '@ngrx/store'
 
-export const WS_ENDPOINT = environment.wsEndpoint
+export const WS_ENDPOINT = environment.wsEndpoint ? environment.wsEndpoint : 'ws://' + location.host + '/ws'
 
 @Injectable({
   providedIn: 'root',
