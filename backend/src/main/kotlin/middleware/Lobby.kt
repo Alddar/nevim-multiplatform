@@ -5,8 +5,6 @@ import dto.IdDTO
 import dto.LobbyDTO
 import dto.LobbyListDTO
 import io.ktor.http.cio.websocket.*
-import javafx.application.Application.launch
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
