@@ -1,7 +1,4 @@
-import action.CreateLobby
-import action.JoinLobby
-import action.LeaveLobby
-import action.NewPlayer
+import action.*
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.response.*
@@ -31,6 +28,7 @@ val store = createThreadSafeStore(
         updateLobbyList,
         updateLobby,
         leaveLobby,
+        ready,
     )
 )
 
@@ -87,6 +85,7 @@ fun Application.module() {
                                         Player(currentSession.id, message.payload.name, session)
                                     )
                                 )
+                                println("Player joined, ${store.state.players.size} in lobby.")
                             }
                             is CreateLobbyMessage -> {
                                 store.dispatch(
@@ -95,7 +94,7 @@ fun Application.module() {
                                             generateNonce(),
                                             message.payload.name,
                                             message.payload.maxPlayers,
-                                            listOf(store.state.players.getValue(currentSession.id))
+                                            listOf(currentSession.id)
                                         )
                                     )
                                 )
@@ -103,24 +102,45 @@ fun Application.module() {
                             is JoinLobbyMessage -> {
                                 store.dispatch(
                                     JoinLobby(
-                                        store.getState().players[currentSession.id] ?: error("Player not found"),
-                                        store.getState().lobbies[message.payload.id] ?: error("Lobby not found")
+                                        store.state.players[currentSession.id] ?: error("Player not found"),
+                                        store.state.lobbies[message.payload.id] ?: error("Lobby not found")
                                     )
                                 )
                             }
                             is LeaveLobbyMessage -> {
+                                val player = store.state.players[currentSession.id] ?: error("Player not found")
+                                val lobby = store.state.lobbies[player.lobby ?: error("Player has no lobby")]
+                                    ?: error("Lobby not found")
+
                                 store.dispatch(
                                     LeaveLobby(
-                                        store.getState().players[currentSession.id] ?: error("Player not found"),
-                                        store.getState().players[currentSession.id]?.lobby ?: error("Player not found")
+                                        player,
+                                        lobby
                                     )
+                                )
+                            }
+                            is ReadyMessage -> {
+                                val player = store.state.players[currentSession.id] ?: error("Player not found")
+                                val lobby = store.state.lobbies[player.lobby ?: error("Player has no lobby")]
+                                    ?: error("Lobby not found")
+                                store.dispatch(
+                                    Ready(player, lobby)
                                 )
                             }
                         }
                     }
                 }
             } finally {
-                // left
+                val player = store.state.players[currentSession.id] ?: error("Player not found")
+                val lobby = store.state.lobbies[player.lobby ?: error("Player has no lobby")]
+                    ?: error("Lobby not found")
+                store.dispatch(
+                    LeaveLobby(player, lobby)
+                )
+                store.dispatch(
+                    Disconnect(player)
+                )
+                println("Player left, ${store.getState().players.size} remaining.")
             }
         }
     }

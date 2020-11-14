@@ -5,6 +5,8 @@ import dto.IdDTO
 import dto.LobbyDTO
 import dto.LobbyListDTO
 import io.ktor.http.cio.websocket.*
+import javafx.application.Application.launch
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -35,20 +37,22 @@ val sendId = middleware<Server> { _, next, action ->
 
 val updateLobbyList = middleware<Server> { store, next, action ->
     val result = next(action)
-    when(action) {
-        is CreateLobby, is NewPlayer, is JoinLobby, is UpdateLobby, is DeleteLobby ->
-        GlobalScope.launch {
-            store.getState().players.forEach { (_, player) ->
-                player.session?.send(
-                    Frame.Text(
-                        Json.encodeToString(
-                            UpdateLobbyListMessage(LobbyListDTO(store.getState().lobbies.map{
-                                val lobby = it.value
-                                LobbyListDTO.Lobby(lobby.id, lobby.name, lobby.maxPlayers, lobby.players.size)
-                            }.toTypedArray()))
+    when (action) {
+        is CreateLobby, is NewPlayer, is JoinLobby, is UpdateLobby, is DeleteLobby -> {
+            val lobbies = store.state.lobbies
+            store.state.players.forEach { (_, player) ->
+                GlobalScope.launch {
+                    player.session?.send(
+                        Frame.Text(
+                            Json.encodeToString(
+                                UpdateLobbyListMessage(LobbyListDTO(lobbies.map {
+                                    val lobby = it.value
+                                    LobbyListDTO.Lobby(lobby.id, lobby.name, lobby.maxPlayers, lobby.players.size)
+                                }.toTypedArray()))
+                            )
                         )
                     )
-                )
+                }
             }
         }
     }
@@ -56,21 +60,27 @@ val updateLobbyList = middleware<Server> { store, next, action ->
 }
 
 fun updateLobby(store: Store<Server>, lobby: Lobby) {
-    GlobalScope.launch {
-        store.getState().lobbies[lobby.id]?.apply {
-            val lobbyDTO = LobbyDTO(
-                LobbyDTO.Lobby(
-                    this.id,
-                    this.name,
-                    this.maxPlayers,
-                    this.players.map {
-                        LobbyDTO.Lobby.Player(it.id, it.name ?: "", it.ready)
-                    }.toTypedArray()
-                ))
-            players.forEach{
-                it.session?.send(Frame.Text(Json.encodeToString(
-                    UpdateLobbyMessage(lobbyDTO)
-                )))
+    store.state.lobbies[lobby.id]?.apply {
+        val lobbyDTO = LobbyDTO(
+            LobbyDTO.Lobby(
+                this.id,
+                this.name,
+                this.maxPlayers,
+                this.players.map {
+                    val player = store.state.players[it] ?: error("Player from lobby not found")
+                    LobbyDTO.Lobby.Player(player.id, player.name ?: "", player.ready)
+                }.toTypedArray()
+            )
+        )
+        players.forEach {
+            GlobalScope.launch {
+                store.state.players[it]?.session?.send(
+                    Frame.Text(
+                        Json.encodeToString(
+                            UpdateLobbyMessage(lobbyDTO)
+                        )
+                    )
+                )
             }
         }
     }
@@ -78,7 +88,7 @@ fun updateLobby(store: Store<Server>, lobby: Lobby) {
 
 val updateLobby = middleware<Server> { store, next, action ->
     val result = next(action)
-    when(action) {
+    when (action) {
         is CreateLobby -> updateLobby(store, action.lobby)
         is JoinLobby -> updateLobby(store, action.lobby)
         is UpdateLobby -> updateLobby(store, action.lobby)
@@ -88,15 +98,37 @@ val updateLobby = middleware<Server> { store, next, action ->
 
 val leaveLobby = middleware<Server> { store, next, action ->
     val result = next(action)
-    when(action) {
+    when (action) {
         is LeaveLobby -> {
-            val lobby = store.getState().lobbies[action.player.lobby?.id]
+            val lobby = store.state.lobbies[action.lobby.id] ?: error("Lobby not found")
 
-            if(lobby?.players?.isEmpty() == true) {
+            if (lobby.players.isEmpty()) {
                 store.dispatch(DeleteLobby(lobby))
             } else {
-                store.dispatch(UpdateLobby(lobby!!))
+                store.dispatch(UpdateLobby(lobby))
             }
+        }
+    }
+    result
+}
+
+val ready = middleware<Server> { store, next, action ->
+    val result = next(action)
+    when(action) {
+        is Ready -> {
+            updateLobby(store, action.lobby)
+            println("ALL LOBBIES FROM STATE WITH PLAYERS")
+            store.state.lobbies.forEach {
+                println(it.value.id)
+                it.value.players.forEach {
+                    println(it)
+                }
+            }
+            println("ALL PLAYERS FROM STATE")
+            store.state.players.forEach {
+                println(it)
+            }
+            println("END")
         }
     }
     result

@@ -10,15 +10,20 @@ val playersReducer: Reducer<Map<String, Player>> = { state, action ->
     when (action) {
         is NewPlayer -> state + (action.player.id to action.player)
         is JoinLobby -> state.mapValues { (id, player) ->
-            if (id == action.player.id) player.copy(lobby = action.lobby)
+            if (id == action.player.id) player.copy(lobby = action.lobby.id)
             else player
         }
         is CreateLobby -> state.mapValues { (id, player) ->
-            if (id == action.lobby.players.first().id) player.copy(lobby = action.lobby)
+            if (id == action.lobby.players.first()) player.copy(lobby = action.lobby.id)
             else player
         }
         is LeaveLobby -> state.mapValues { (id, player) ->
             if (id == action.player.id) player.copy(lobby = null)
+            else player
+        }
+        is Disconnect -> state - action.player.id
+        is Ready -> state.mapValues { (id, player) ->
+            if(id == action.player.id) player.copy(ready = !player.ready)
             else player
         }
         else -> state
@@ -30,11 +35,11 @@ val lobbiesReducer: Reducer<Map<String, Lobby>> = { state, action ->
         is CreateLobby -> state + (action.lobby.id to action.lobby)
         is DeleteLobby -> state - action.lobby.id
         is JoinLobby -> state.mapValues { (id, lobby) ->
-            if (id == action.lobby.id && lobby.maxPlayers > lobby.players.size) lobby.copy(players = lobby.players + action.player)
+            if (id == action.lobby.id && lobby.maxPlayers > lobby.players.size) lobby.copy(players = lobby.players + action.player.id)
             else lobby
         }
         is LeaveLobby -> state.mapValues { (id, lobby) ->
-            if (id == action.lobby.id) lobby.copy(players = lobby.players.filter {it.id != action.player.id})
+            if (id == action.lobby.id) lobby.copy(players = lobby.players.filter {it != action.player.id})
             else lobby
         }
         else -> state

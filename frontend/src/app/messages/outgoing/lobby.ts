@@ -33,3 +33,11 @@ export class LeaveLobbyMessage extends OutgoingMessage {
     super(OUT_LEAVE_LOBBY, {})
   }
 }
+
+export const OUT_READY = 'READY'
+
+export class ReadyMessage extends OutgoingMessage {
+  constructor() {
+    super(OUT_READY, {})
+  }
+}

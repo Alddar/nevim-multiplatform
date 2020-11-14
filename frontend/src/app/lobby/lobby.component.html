@@ -7,7 +7,7 @@
       <button class="button button-red w-full m-2" (click)="ready()">Ready</button>
       <button class="button button-red w-full m-2" (click)="leave()">Odejít</button>
     </div>
-    <div *ngFor="let player of (lobby$ | async)?.lobby?.players" class="w-100 rounded bg-gray-850 mx-2 my-4 p-4 text-gray-300 flex">
+    <div *ngFor="let player of (lobby$ | async)?.lobby?.players" class="w-100 rounded bg-gray-850 mx-2 my-4 p-4 text-gray-300 flex" [ngClass]="{ 'border border-gray-400': player.id == (player$ | async).id }">
       <div class="flex-grow">{{ player.name }}</div>
       <div class="w-3 flex justify-center {{player.ready ? 'text-green-600' : 'text-red-600'}}">
         <fa-icon [icon]="player.ready ? faCheck : faTimes" size="x"></fa-icon>

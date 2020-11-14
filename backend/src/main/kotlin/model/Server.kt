@@ -12,7 +12,7 @@ data class Player(
     val session: WebSocketServerSession? = null,
     val ready: Boolean = false,
     @Transient
-    val lobby: Lobby? = null,
+    val lobby: String? = null,
 )
 
 @Serializable
@@ -20,7 +20,7 @@ data class Lobby(
     val id: String,
     val name: String,
     val maxPlayers: Int,
-    val players: List<Player>
+    val players: List<String>
 )
 
 @Serializable

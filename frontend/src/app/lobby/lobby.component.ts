@@ -6,13 +6,16 @@ import {selectLobby} from '../selectors/lobby.selector'
 import {Store} from '@ngrx/store'
 import {AppState} from '../reducers/app.reducer'
 import {LobbyDTO} from '../dto/server'
-import {leaveLobby} from '../actions/lobby.actions'
+import {leaveLobby, ready} from '../actions/lobby.actions'
+import {PlayerState} from '../reducers/player.reducer'
+import {selectPlayer} from '../selectors/player.selector'
 
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
 })
 export class LobbyComponent implements OnInit {
+  player$: Observable<PlayerState>
   lobby$: Observable<LobbyDTO>
 
   faCheck = faCheck
@@ -23,15 +26,15 @@ export class LobbyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.player$ = this.store.select(selectPlayer)
     this.lobby$ = this.store.select(selectLobby)
   }
 
   ready(): void {
-    console.log('ready')
+    this.store.dispatch(ready())
   }
 
   leave(): void {
     this.store.dispatch(leaveLobby())
   }
-
 }

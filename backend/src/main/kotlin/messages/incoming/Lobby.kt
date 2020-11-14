@@ -25,3 +25,8 @@ const val IN_LEAVE_LOBBY = "LEAVE_LOBBY"
 
 @Serializable
 class LeaveLobbyMessage(override val payload: JsonObject): IncomingMessage(IN_LEAVE_LOBBY)
+
+const val IN_READY = "READY"
+
+@Serializable
+class ReadyMessage(override val payload: JsonObject): IncomingMessage(IN_READY)

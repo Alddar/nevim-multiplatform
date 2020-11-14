@@ -2,8 +2,14 @@ import {Injectable} from '@angular/core'
 import {Actions, createEffect, ofType} from '@ngrx/effects'
 import {exhaust, tap} from 'rxjs/operators'
 import {WebsocketService} from '../services/websocket.service'
-import {CreateLobbyMessage, JoinLobbyMessage, LeaveLobbyMessage, NameMessage} from '../messages/outgoing/lobby'
-import {createLobby, joinLobby, leaveLobby, sendName} from '../actions/lobby.actions'
+import {
+  CreateLobbyMessage,
+  JoinLobbyMessage,
+  LeaveLobbyMessage,
+  NameMessage,
+  ReadyMessage,
+} from '../messages/outgoing/lobby'
+import {createLobby, joinLobby, leaveLobby, ready, sendName} from '../actions/lobby.actions'
 import {NameDTO} from '../dto/server'
 
 @Injectable()
@@ -36,6 +42,13 @@ export class OutgoingEffects {
       this.actions$.pipe(
         ofType(leaveLobby),
         tap(() => this.ws$.send(new LeaveLobbyMessage()))
+      ),
+    {dispatch: false})
+
+  ready$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(ready),
+        tap(() => this.ws$.send(new ReadyMessage()))
       ),
     {dispatch: false})
 
