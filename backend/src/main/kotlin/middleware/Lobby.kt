@@ -12,7 +12,6 @@ import kotlinx.serialization.json.*
 import messages.outgoing.IDMessage
 import messages.outgoing.UpdateLobbyListMessage
 import messages.outgoing.UpdateLobbyMessage
-import model.Lobby
 import model.Server
 import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
@@ -57,8 +56,8 @@ val updateLobbyList = middleware<Server> { store, next, action ->
     result
 }
 
-fun updateLobby(store: Store<Server>, lobby: Lobby) {
-    store.state.lobbies[lobby.id]?.apply {
+fun updateLobby(store: Store<Server>, lobbyId: String) {
+    store.state.lobbies[lobbyId]?.apply {
         val lobbyDTO = LobbyDTO(
             LobbyDTO.Lobby(
                 this.id,
@@ -87,9 +86,9 @@ fun updateLobby(store: Store<Server>, lobby: Lobby) {
 val updateLobby = middleware<Server> { store, next, action ->
     val result = next(action)
     when (action) {
-        is CreateLobby -> updateLobby(store, action.lobby)
-        is JoinLobby -> updateLobby(store, action.lobby)
-        is UpdateLobby -> updateLobby(store, action.lobby)
+        is CreateLobby -> updateLobby(store, action.lobby.id)
+        is JoinLobby -> updateLobby(store, action.lobby.id)
+        is UpdateLobby -> updateLobby(store, action.lobby.id)
     }
     result
 }
@@ -114,19 +113,7 @@ val ready = middleware<Server> { store, next, action ->
     val result = next(action)
     when(action) {
         is Ready -> {
-            updateLobby(store, action.lobby)
-            println("ALL LOBBIES FROM STATE WITH PLAYERS")
-            store.state.lobbies.forEach {
-                println(it.value.id)
-                it.value.players.forEach {
-                    println(it)
-                }
-            }
-            println("ALL PLAYERS FROM STATE")
-            store.state.players.forEach {
-                println(it)
-            }
-            println("END")
+            updateLobby(store, action.lobby.id)
         }
     }
     result
